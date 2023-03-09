@@ -28,6 +28,13 @@ public class Main {
                 IProblem problem = reader.parseInstance(new FileInputStream(file));
                 if (problem.isSatisfiable())
                 {
+                    int[] solution = problem.model();
+                    StringBuilder result = new StringBuilder("[" + solution[0]);
+                    for(int i = 1; i < solution.length; i++ )
+                    {
+                        result.append(", ").append(solution[i]);
+                    }
+                    System.out.println(result + "]");
                     System.out.println("Satisfiable !");
                     reader.decode(problem.model(),out);
                 } else
