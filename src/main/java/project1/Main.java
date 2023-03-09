@@ -20,7 +20,8 @@ public class Main
         ArrayList<Clause> clauses = new ArrayList<>();
         Boolean[] testValues = new Boolean[0];
         Scanner scanner;
-        File[] files = new File[10];
+        File[] files = new File("bruteForceInputs").listFiles();
+        /*File[] files = new File[10];
         files[0] = new File("s5.cnf");
         files[1] = new File("s15.cnf");
         files[2] = new File("s20.cnf");
@@ -30,7 +31,7 @@ public class Main
         files[6] = new File("u27.cnf");
         files[7] = new File("u29.cnf");
         files[8] = new File("u30.cnf");
-        files[9] = new File("u32.cnf");
+        files[9] = new File("u32.cnf");*/
 
         for(File file : files)
         {
