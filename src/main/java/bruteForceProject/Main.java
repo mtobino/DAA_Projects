@@ -1,4 +1,4 @@
-package project1;
+package bruteForceProject;
 
 import java.io.File;
 import java.util.ArrayList;

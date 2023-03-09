@@ -1,4 +1,4 @@
-package project2;
+package sudokuSolverProject;
 
 
 import org.sat4j.minisat.SolverFactory;

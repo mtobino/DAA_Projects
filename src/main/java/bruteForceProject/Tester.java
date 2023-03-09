@@ -1,4 +1,4 @@
-package project1;
+package bruteForceProject;
 
 import java.util.Arrays;
 //import java.util.Scanner;
