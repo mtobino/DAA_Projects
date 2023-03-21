@@ -11,12 +11,13 @@ import org.sat4j.specs.TimeoutException;
 */
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class Playground {
     public static void main(String[] args) {
-       ArrayList<int[]> clauses = new ArrayList<>();
+        Stack<int[]> clauses = new Stack<>();
+       //ArrayList<int[]> clauses = new ArrayList<>();
         try
         {
            File direc = new File("sudokuInputs");
@@ -39,7 +40,7 @@ public class Playground {
                    if(!clue.equals("0"))
                    {
                        int[] clueNum = { encodeVariable(Integer.parseInt(clue), row, col, gridSize) };
-                       clauses.add(clueNum);
+                       clauses.push(clueNum);
                    }
                    col++;
                }
@@ -66,7 +67,7 @@ public class Playground {
                    col++;
                }
                // add the created clause to the list of clauses and reset val and col to 1 for next loop
-               clauses.add(clauseFromList(nums));
+               clauses.push(clauseFromList(nums));
                col = 1;
                val = 1;
                row++;
@@ -88,7 +89,7 @@ public class Playground {
                         {
                             clause[0] = -encodeVariable(val, row, col, gridSize);
                             clause[1] = -encodeVariable(nextVal, row, col, gridSize);
-                            clauses.add(clause);
+                            clauses.push(clause);
                             nextVal++;
                         }
                         val++;
@@ -116,7 +117,7 @@ public class Playground {
                         nums.add(encodeVariable(val, row, col, gridSize));
                         col++;
                     }
-                    clauses.add(clauseFromList(nums));
+                    clauses.push(clauseFromList(nums));
                     row++;
                 }
                 // each col has the value
@@ -128,7 +129,7 @@ public class Playground {
                         nums.add(encodeVariable(val, row, col, gridSize));
                         row++;
                     }
-                    clauses.add(clauseFromList(nums));
+                    clauses.push(clauseFromList(nums));
                     col++;
                 }
                 val++;
@@ -146,6 +147,7 @@ public class Playground {
                         String you = "bozo";
                     }
                 }
+                val++;
             }
 
 
