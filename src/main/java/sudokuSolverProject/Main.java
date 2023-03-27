@@ -11,6 +11,7 @@ import org.sat4j.specs.ISolver;
 import org.sat4j.specs.TimeoutException;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args)
@@ -18,6 +19,7 @@ public class Main {
         ISolver solver = SolverFactory.newDefault();
         solver.setTimeout(3600); // 1 hour timeout
         File[] files = new File("bruteForceInputs").listFiles();
+        assert files != null;
         for(File file: files)
         {
             Reader reader = new DimacsReader(solver);
@@ -29,12 +31,7 @@ public class Main {
                 if (problem.isSatisfiable())
                 {
                     int[] solution = problem.model();
-                    StringBuilder result = new StringBuilder("[" + solution[0]);
-                    for(int i = 1; i < solution.length; i++ )
-                    {
-                        result.append(", ").append(solution[i]);
-                    }
-                    System.out.println(result + "]");
+                    System.out.println(Arrays.toString(solution));
                     System.out.println("Satisfiable !");
                     reader.decode(problem.model(),out);
                 } else
