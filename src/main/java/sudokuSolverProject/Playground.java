@@ -8,10 +8,7 @@ import org.sat4j.specs.ISolver;
 import org.sat4j.specs.TimeoutException;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 
 public class Playground {
     public static void main(String[] args)
@@ -38,6 +35,8 @@ public class Playground {
                 rowAndColHaveVal(clauses, gridSize);
                 subGroupClauses(clauses, gridLength);
                 oneValuePerCell(clauses, gridSize);
+                atMostOnePerRow(clauses, gridSize);
+                atMostOnePerCol(clauses, gridSize);
 
                 final int MAXVAR = gridSize*gridSize*gridSize;
                 final int NBCLAUSES = clauses.size();
@@ -98,7 +97,7 @@ public class Playground {
         }
     }
 
-    public static void clueClauses(Stack<int[]> clauses, Scanner scanner, int gridSize){
+    private static void clueClauses(Stack<int[]> clauses, Scanner scanner, int gridSize){
         int row = 1;
         int col = 1;
 
@@ -149,6 +148,76 @@ public class Playground {
 
         }
     }
+
+    /**
+     * Creates clauses that guarantee that for every col, and for each row, there is
+     * only one value that will satisfy the board.
+     *
+     * @param clauses   The overarching clauses collection to be added to
+     * @param gridSize  The size of the board
+     */
+    private static void atMostOnePerCol(Stack<int[]> clauses, int gridSize){
+        ArrayList<Variable> variables = new ArrayList<>();
+        // in every col
+        for(int col = 1; col <= gridSize; col++){
+            // in each row of that col
+            for(int row = 1; row <= gridSize; row++){
+                // for every value of the col
+                for(int val = 1; val <= gridSize; val++){
+                    // add the next values to the clause
+                    for(int nextVal = val + 1; nextVal <= gridSize; nextVal++)
+                    {
+                        // add that variable to the clause
+                        variables.add(new Variable(row, col, val, gridSize));
+                        variables.add(new Variable(row, col, nextVal, gridSize));
+                    }
+                    // build a not clause that will only be true if correct value is in
+                    // the correct position
+                    clauses.push(clauseFromListWithNegatives(variables));
+                    variables.clear();
+                }
+            }
+        }
+    }
+
+    /**
+     * Creates clauses that guarantee that in every row, and for each column, there is
+     * only one value that will satisfy the board.
+     *
+     * @param clauses   The overarching clauses collection to be added to
+     * @param gridSize  The size of the board
+     */
+    private static void atMostOnePerRow(Stack<int[]> clauses, int gridSize){
+        ArrayList<Variable> variables = new ArrayList<>();
+        // in every row
+        for(int row = 1; row <= gridSize; row++){
+            // in each col of that row
+            for(int col = 1; col <= gridSize; col++){
+                // for every value of the row
+                for(int val = 1; val <= gridSize; val++){
+
+                    for(int nextVal = val + 1; nextVal <= gridSize; nextVal++)
+                    {
+                        variables.add(new Variable(row, col, val, gridSize));
+                        variables.add(new Variable(row, col, nextVal, gridSize));
+                    }
+                    clauses.push(clauseFromListWithNegatives(variables));
+                    variables.clear();
+                }
+            }
+        }
+    }
+
+    private static int[] clauseFromListWithNegatives(List<Variable> variables)
+    {
+        int[] result = new int[variables.size()];
+        for(int i = 0; i < result.length; i++)
+        {
+            result[i] = -variables.get(i).encodeVariable();
+        }
+        return result;
+    }
+
 
     /**
      * Create clauses to ensure each row has the specified value and each column also
@@ -224,7 +293,13 @@ public class Playground {
         }
     }
 
-    public static void oneValuePerCell(Stack<int[]> clauses, int gridSize)
+    /**
+     * Creates clauses that guarantee there is only one value per cell
+     *
+     * @param clauses   The overarching clauses collection to be added to
+     * @param gridSize  The size of the board
+     */
+    private static void oneValuePerCell(Stack<int[]> clauses, int gridSize)
     {
         //ArrayList<Variable> clause = new ArrayList<>();
         // for every value
@@ -250,11 +325,28 @@ public class Playground {
     {
         return (row - 1)*gridSize*gridSize + (col - 1) * gridSize + (value - 1) + 1;
     }*/
+
+    /**
+     * The encoder but if it was set to solve for value instead of the variable
+     *
+     * @param var       the variable
+     * @param row       the row the variable was located in
+     * @param col       the col the variable was located in
+     * @param gridSize  the size of the board
+     * @return          The value of the variable
+     */
     private static int decodeVariable(int var, int row, int col, int gridSize)
     {
         return -(gridSize*gridSize)*row - (gridSize*col) + (gridSize*gridSize) + gridSize + var;
     }
-    private static int[] clauseFromList(ArrayList<Variable> list)
+
+    /**
+     * Returns a int array that is composed of the variables that will
+     * make up a clause.
+     * @param list  The list of variables
+     * @return      The clause
+     */
+    private static int[] clauseFromList(List<Variable> list)
     {
         int[] result = new int[list.size()];
         for(int i = 0; i < result.length; i++)
@@ -264,6 +356,13 @@ public class Playground {
         return result;
     }
 
+    /**
+     * Prints the solution of the board based on the given solution and size
+     * of the board
+     *
+     * @param solution  The solution provided by the SAT solver
+     * @param gridSize  The size of the board
+     */
     private static void printSolution(int[] solution, int gridSize)
     {
         System.out.println("Solution is:");
@@ -275,15 +374,14 @@ public class Playground {
                 if(col <= gridSize)
                 {
                     System.out.print( decodeVariable(variable, row, col, gridSize) + " ");
-                    col++;
                 }
                 else
                 {
                     row += 1;
                     col = 1;
                     System.out.print("\n" + decodeVariable(variable, row, col, gridSize) + " ");
-                    col++;
                 }
+                col++;
             }
         }
     }
