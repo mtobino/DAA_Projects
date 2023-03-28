@@ -163,7 +163,7 @@ public class Playground {
             // in each row of that col
             for(int row = 1; row <= gridSize; row++){
                 // for every value of the col
-                for(int val = 1; val <= gridSize; val++){
+                for(int val = 1; val < gridSize; val++){
                     // add the next values to the clause
                     for(int nextVal = val + 1; nextVal <= gridSize; nextVal++)
                     {
@@ -194,7 +194,7 @@ public class Playground {
             // in each col of that row
             for(int col = 1; col <= gridSize; col++){
                 // for every value of the row
-                for(int val = 1; val <= gridSize; val++){
+                for(int val = 1; val < gridSize; val++){
 
                     for(int nextVal = val + 1; nextVal <= gridSize; nextVal++)
                     {
