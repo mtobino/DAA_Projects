@@ -1,20 +1,7 @@
 package sudokuSolverProject;
-/*
-import org.sat4j.minisat.SolverFactory;
-import org.sat4j.reader.DimacsReader;
-import org.sat4j.reader.ParseFormatException;
-import org.sat4j.reader.Reader;
-import org.sat4j.specs.ContradictionException;
-import org.sat4j.specs.IProblem;
-import org.sat4j.specs.ISolver;
-import org.sat4j.specs.TimeoutException;
-*/
 
 import org.sat4j.core.VecInt;
 import org.sat4j.minisat.SolverFactory;
-import org.sat4j.reader.DimacsReader;
-import org.sat4j.reader.ParseFormatException;
-import org.sat4j.reader.Reader;
 import org.sat4j.specs.ContradictionException;
 import org.sat4j.specs.IProblem;
 import org.sat4j.specs.ISolver;
@@ -33,12 +20,13 @@ public class Playground {
         File direc = new File("sudokuInputs");
         File[] files = direc.listFiles();
         assert files != null;
-        File test = files[1];
         for(File file : files){
             try
             {
 
-                Scanner scanner = new Scanner(test);
+                long startTime = System.currentTimeMillis();
+                System.out.println("Testing: " + file.getName() + "\n");
+                Scanner scanner = new Scanner(file);
                 int gridLength = scanner.nextInt();
                 int gridSize = gridLength * scanner.nextInt();
                 //advance the scanner to avoid issues
@@ -46,14 +34,17 @@ public class Playground {
 
                 // helper method calls to generate the clauses
                 clueClauses(clauses, scanner, gridSize);
-                atLeastOne(clauses, gridSize);
+                //atLeastOne(clauses, gridSize);
                 rowAndColHaveVal(clauses, gridSize);
                 subGroupClauses(clauses, gridLength);
+                oneValuePerCell(clauses, gridSize);
 
                 final int MAXVAR = gridSize*gridSize*gridSize;
                 final int NBCLAUSES = clauses.size();
 
                 ISolver solver = SolverFactory.newDefault();
+                // 10 minute timeout
+                //solver.setTimeout(1200);
 
                 // prepare the solver to accept MAXVAR variables. MANDATORY for MAXSAT solving
                 solver.newVar(MAXVAR);
@@ -69,10 +60,12 @@ public class Playground {
                 if (problem.isSatisfiable())
                 {
                     printSolution(problem.model(), gridSize);
+                    long endTime = System.currentTimeMillis();
+                    System.out.println("\nTime taken to run to completion: " + (endTime - startTime) + " milliseconds");
                 }
                 else
                 {
-                    System.out.println("there was not solution to the problem");
+                    System.out.println("\nThere was not solution to the problem");
                 }
             }
             catch (FileNotFoundException e)
@@ -93,6 +86,18 @@ public class Playground {
         }
     }
 
+    private static void findEmptyClause(Stack<int[]> clauses) {
+        int index = 0;
+        while(!clauses.empty())
+        {
+            if(clauses.pop().length == 0)
+            {
+                System.out.println("Empty clause at " + index);
+            }
+            index++;
+        }
+    }
+
     public static void clueClauses(Stack<int[]> clauses, Scanner scanner, int gridSize){
         int row = 1;
         int col = 1;
@@ -106,12 +111,13 @@ public class Playground {
             {
                 if(!clue.equals("0"))
                 {
-                    int[] clueNum = { encodeVariable(Integer.parseInt(clue), row, col, gridSize) };
+                    int[] clueNum = { new Variable(row, col, Integer.parseInt(clue), gridSize).encodeVariable() };
                     clauses.push(clueNum);
                 }
                 col++;
             }
             row++;
+            col = 1;
         }
     }
     /**
@@ -123,7 +129,7 @@ public class Playground {
     private static void atLeastOne(Stack<int[]> clauses, int gridSize)
     {
 
-        ArrayList<Integer> clause = new ArrayList<>();
+        ArrayList<Variable> clause = new ArrayList<>();
         // in each row
         for(int row = 1; row <= gridSize; row++)
         {
@@ -134,11 +140,13 @@ public class Playground {
                 for(int val = 1; val <= gridSize; val++)
                 {
                     // make a clause of one variable
-                    clause.add(encodeVariable(val, row, col, gridSize));
+                    clause.add(new Variable(row, col, val, gridSize));
                 }
+                // add clause to the stack of clauses
+                clauses.push(clauseFromList(clause));
+                clause.clear();
             }
-            // add clause to the stack of clauses
-            clauses.push(clauseFromList(clause));
+
         }
     }
 
@@ -150,12 +158,10 @@ public class Playground {
      * @param   gridSize   The size of the whole board
      */
     private static void rowAndColHaveVal(Stack<int[]> clauses, int gridSize){
-        ArrayList<Integer> clause = new ArrayList<>();
+        ArrayList<Variable> clause = new ArrayList<>();
         // for every value
         for(int val = 1; val <= gridSize; val++)
         {
-            // ensure you start with a clean clause
-            clause.clear();
             // in each row
             for(int row = 1; row <= gridSize; row++)
             {
@@ -163,12 +169,12 @@ public class Playground {
                 for(int col = 1; col <= gridSize; col++)
                 {
                     // add the respective variable to the clause
-                    clause.add(encodeVariable(val, row, col, gridSize));
+                    clause.add(new Variable(row, col, val, gridSize));
                 }
+                // add the clause to the stack
+                clauses.push(clauseFromList(clause));
+                clause.clear();
             }
-            // add the clause to the stack
-            clauses.push(clauseFromList(clause));
-            clause.clear();
 
             // for each col
             for(int col = 1; col <= gridSize; col++)
@@ -177,11 +183,13 @@ public class Playground {
                 for(int row = 1; row <= gridSize; row++)
                 {
                     // add the respective variable to the clause
-                    clause.add(encodeVariable(val, row, col, gridSize));
+                    clause.add(new Variable(row, col, val, gridSize));
                 }
+                // add the clause to the stack
+                clauses.push(clauseFromList(clause));
+                clause.clear();
             }
-            // add the clause to the stack
-            clauses.push(clauseFromList(clause));
+
         }
     }
 
@@ -193,7 +201,7 @@ public class Playground {
      */
     private static void subGroupClauses(Stack<int[]> clauses, int gridLength)
     {
-        ArrayList<Integer> clause = new ArrayList<>();
+        ArrayList<Variable> clause = new ArrayList<>();
         int max = gridLength*gridLength;
         for(int val = 1; val <= gridLength*gridLength; val++)
         {
@@ -204,7 +212,7 @@ public class Playground {
                   int maxCol = max - gridLength*(gridLength - overallCol);
                   for(int subCol = (gridLength*(overallCol - 1) + 1); subCol <= maxCol; subCol++)
                   {
-                      clause.add(encodeVariable(val, subRow, subCol, max));
+                      clause.add(new Variable(subRow, subCol, val, max));
                   }
                   if(subRow % gridLength == 0)
                   {
@@ -214,43 +222,67 @@ public class Playground {
               }
             }
         }
-        clauses.push(clauseFromList(clause));
     }
+
+    public static void oneValuePerCell(Stack<int[]> clauses, int gridSize)
+    {
+        //ArrayList<Variable> clause = new ArrayList<>();
+        // for every value
+        for(int val = 1; val <= gridSize; val++)
+        {
+            //in each row
+            for(int row = 1; row <= gridSize; row++){
+                // for every col of that row
+                for(int col = 1; col <= gridSize; col++){
+                    // make sure that the no value repeats in that cell
+                    for(int nextVal = val + 1; nextVal <= gridSize; nextVal++)
+                    {
+                        int [] clause = { -(new Variable(row, col, val, gridSize ).encodeVariable()), -(new Variable(row, col, nextVal, gridSize ).encodeVariable())  };
+                        clauses.push(clause);
+                    }
+                }
+            }
+        }
+    }
+
+    /*
     private static int encodeVariable(int value, int row, int col, int gridSize)
     {
         return (row - 1)*gridSize*gridSize + (col - 1) * gridSize + (value - 1) + 1;
-    }
+    }*/
     private static int decodeVariable(int var, int row, int col, int gridSize)
     {
         return -(gridSize*gridSize)*row - (gridSize*col) + (gridSize*gridSize) + gridSize + var;
     }
-    private static int[] clauseFromList(ArrayList<Integer> list)
+    private static int[] clauseFromList(ArrayList<Variable> list)
     {
         int[] result = new int[list.size()];
         for(int i = 0; i < result.length; i++)
         {
-            result[i] = list.get(i);
+            result[i] = list.get(i).encodeVariable();
         }
         return result;
     }
 
     private static void printSolution(int[] solution, int gridSize)
     {
+        System.out.println("Solution is:");
         int row = 1, col = 1;
         for(int variable : solution)
         {
-            if(variable >= 0)
+            if(variable > 0)
             {
-                if(col != 9)
+                if(col <= gridSize)
                 {
-                    System.out.println(decodeVariable(variable, row, col, gridSize) + " ");
+                    System.out.print( decodeVariable(variable, row, col, gridSize) + " ");
                     col++;
                 }
                 else
                 {
                     row += 1;
                     col = 1;
-                    System.out.println("\n" + decodeVariable(variable, row, col, gridSize) + " ");
+                    System.out.print("\n" + decodeVariable(variable, row, col, gridSize) + " ");
+                    col++;
                 }
             }
         }

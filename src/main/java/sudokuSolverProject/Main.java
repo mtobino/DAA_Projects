@@ -22,6 +22,7 @@ public class Main {
         assert files != null;
         for(File file: files)
         {
+            System.out.println("testing: " + file.getName());
             Reader reader = new DimacsReader(solver);
             PrintWriter out = new PrintWriter(System.out,true);
             // CNF filename is given on the command line
