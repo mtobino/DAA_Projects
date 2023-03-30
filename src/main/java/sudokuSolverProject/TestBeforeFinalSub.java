@@ -37,28 +37,18 @@ public class TestBeforeFinalSub {
                 //advance the scanner to avoid issues
                 scanner.nextLine();
 
+                // Make Clause Generator class to generate all the clauses
                 ClauseGenerator clauses = new ClauseGenerator(scanner, pw, gridSize);
                 clauseCounter = clauses.generateClauses();
-
-                /* helper method calls to generate the clauses
-                clauseCounter += clueClauses(clauses, scanner, gridSize, pw);
-                clauseCounter += atMostOnePerCell(clauses, gridSize, pw);
-                clauseCounter += atMostOnePerCol(clauses, gridSize, pw);
-                clauseCounter += atMostOnePerRow(clauses, gridSize, pw);
-                clauseCounter += atMostOnePerSubGroup(clauses, gridLength, pw);
-                clauseCounter += atLeastOnePerCell(clauses, gridSize, pw);
-                clauseCounter += atLeastOnePerRowAndCol(clauses, gridSize, pw);
-                clauseCounter += atLeastOnePerSubGroup(clauses, gridLength, pw);
-                */
 
                 pw.close();
 
                 File puzzleCNF = new File(tempDir,file.getName() + ".cnf");
                 PrintWriter cnfWriter = new PrintWriter(new BufferedWriter( new FileWriter(puzzleCNF)));
                 BufferedReader br = new BufferedReader(new FileReader(cnfFile));
-
                 cnfWriter.println("p cnf " + (gridSize*gridSize*gridSize) + " " + clauseCounter);
                 String line = br.readLine();
+
                 while(line != null)
                 {
                     cnfWriter.println(line);

@@ -3,7 +3,6 @@ package sudokuSolverProject;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Stack;
 
 public class ClauseGenerator
 {
@@ -124,6 +123,7 @@ public class ClauseGenerator
         ArrayList<Variable> clause = new ArrayList<>();
         // for every value
         for (int val = 1; val <= gridSize; val++) {
+
             // in each row
             for (int row = 1; row <= gridSize; row++) {
                 // in every col of that row
@@ -310,8 +310,6 @@ public class ClauseGenerator
     private static int atMostOnePerSubGroup(int gridLength, PrintWriter pw)
     {
         int clauseCounter = 0;
-        //int[] clause = new int[2];
-        ArrayList<Variable> clause = new ArrayList<>();
         int max = gridLength*gridLength;
         for(int val = 1; val <= gridLength*gridLength; val++)
         {
