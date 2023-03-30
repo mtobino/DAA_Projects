@@ -107,20 +107,16 @@ public class Main
         // start with all variables being false
         Arrays.fill(testValues, false);
         // assume there is no solution at first
-        boolean result = false;
+        boolean result = testClauses(testValues, clauses);
+        //generateNextVars(testValues);
         // run until you find a solution
         while(!result)
         {
             result = testClauses(testValues, clauses);
             // check if the all true case has been tested
-            if(!isAllTrue(testValues))
+            if(generateNextVars(testValues))
             {
                 // if it has not, get the next set of test values
-                generateNextVars(testValues);
-            }
-            else
-            {
-                // otherwise there is no solution.
                 return false;
             }
         }
@@ -132,23 +128,33 @@ public class Main
      *
      * @param testValues    the current test value array
      */
-    private static void generateNextVars(Boolean[] testValues)
+    private static boolean generateNextVars(Boolean[] testValues)
     {
+        boolean allTrue = true;
         int zeroPos = 0;
         // find the right most zero and store it into zero pos
         for(int i = 0; i < testValues.length; i++)
         {
+           if(allTrue)
+           {
+               allTrue = testValues[i];
+           }
             if(!testValues[i])
                 zeroPos = i;
         }
         // set the right most zero to true
         testValues[zeroPos] = true;
+        if(allTrue)
+        {
+            return true;
+        }
 
         //turn every value after the right most zero to false
         for(int j = zeroPos + 1; j < testValues.length; j++ )
         {
             testValues[j] = false;
         }
+        return false;
     }
     /**
      * Test each clause with the given test values and see if they all evaluate to true
