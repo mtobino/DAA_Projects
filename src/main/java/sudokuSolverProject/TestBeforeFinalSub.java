@@ -18,7 +18,7 @@ public class TestBeforeFinalSub {
         int fileIndex = 4;
         File tempDir = new File("sudokuCNFs");
         boolean makeDir = tempDir.mkdir();
-        Stack<int[]> clauses = new Stack<>();
+        //Stack<int[]> clauses = new Stack<>();
         File direc = new File("sudokuInputs");
         File[] files = direc.listFiles();
         assert files != null;
@@ -37,7 +37,10 @@ public class TestBeforeFinalSub {
                 //advance the scanner to avoid issues
                 scanner.nextLine();
 
-                // helper method calls to generate the clauses
+                ClauseGenerator clauses = new ClauseGenerator(scanner, pw, gridSize);
+                clauseCounter = clauses.generateClauses();
+
+                /* helper method calls to generate the clauses
                 clauseCounter += clueClauses(clauses, scanner, gridSize, pw);
                 clauseCounter += atMostOnePerCell(clauses, gridSize, pw);
                 clauseCounter += atMostOnePerCol(clauses, gridSize, pw);
@@ -46,6 +49,7 @@ public class TestBeforeFinalSub {
                 clauseCounter += atLeastOnePerCell(clauses, gridSize, pw);
                 clauseCounter += atLeastOnePerRowAndCol(clauses, gridSize, pw);
                 clauseCounter += atLeastOnePerSubGroup(clauses, gridLength, pw);
+                */
 
                 pw.close();
 
