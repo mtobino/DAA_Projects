@@ -1,5 +1,10 @@
 package sudokuSolverProject;
 
+/**
+ * Variable class to encode a variable to fit a nxn sudoku board
+ *
+ * @author Matthew Tobino
+ */
 public class Variable {
     private final int row;
     private final int col;

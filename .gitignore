@@ -5,3 +5,9 @@
 /src/main/java/sudokuSolverProject/CreateFolder.java
 /src/main/java/sudokuSolverProject/Test.java
 
+/sudokuCNFs/
+/puz1CNFInputs.txt
+/puz2CNFInputs.txt
+/puz3CNFInputs.txt
+/puz4CNFInputs.txt
+/unsolvableCNFInputs.txt

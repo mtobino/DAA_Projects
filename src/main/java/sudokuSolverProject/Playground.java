@@ -10,6 +10,9 @@ import org.sat4j.specs.TimeoutException;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Test driver used to play around with learning
+ */
 public class Playground {
     public static void main(String[] args)
     {

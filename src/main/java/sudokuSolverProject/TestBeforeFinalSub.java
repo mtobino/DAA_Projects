@@ -12,24 +12,27 @@ import org.sat4j.specs.TimeoutException;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Test driver to use to avoid messing with the working main driver.
+ */
 public class TestBeforeFinalSub {
     public static void main(String[] args)
     {
         int fileIndex = 4;
-        File tempDir = new File("sudokuCNFs");
-        boolean makeDir = tempDir.mkdir();
+        File sudokuCNFs = new File("sudokuCNFs");
+        boolean makeDir = sudokuCNFs.mkdir();
         //Stack<int[]> clauses = new Stack<>();
         File direc = new File("sudokuInputs");
         File[] files = direc.listFiles();
         assert files != null;
-        File file = files[0];
-        File cnfFile = new File(file.getName() + "CNFInputs.txt");
+        File file = files[1];
+        File cnfClausesFile = new File(file.getName() + "CNFInputs.txt");
             try
             {
 
                 long startTime = System.currentTimeMillis();
                 System.out.println("Testing: " + file.getName());
-                PrintWriter pw = new PrintWriter(new BufferedWriter( new FileWriter(cnfFile)));
+                PrintWriter pw = new PrintWriter(new BufferedWriter( new FileWriter(cnfClausesFile)));
                 Scanner scanner = new Scanner(file);
                 int gridLength = scanner.nextInt();
                 int gridSize = gridLength * scanner.nextInt();
@@ -43,9 +46,9 @@ public class TestBeforeFinalSub {
 
                 pw.close();
 
-                File puzzleCNF = new File(tempDir,file.getName() + ".cnf");
+                File puzzleCNF = new File(sudokuCNFs,file.getName() + ".cnf");
                 PrintWriter cnfWriter = new PrintWriter(new BufferedWriter( new FileWriter(puzzleCNF)));
-                BufferedReader br = new BufferedReader(new FileReader(cnfFile));
+                BufferedReader br = new BufferedReader(new FileReader(cnfClausesFile));
                 cnfWriter.println("p cnf " + (gridSize*gridSize*gridSize) + " " + clauseCounter);
                 String line = br.readLine();
 
@@ -55,9 +58,8 @@ public class TestBeforeFinalSub {
                     line = br.readLine();
                 }
                 cnfWriter.close();
-
                 //Files.delete(cnfFile.toPath());
-                boolean deleted = cnfFile.delete();
+                boolean deleted = cnfClausesFile.delete();
                 ISolver solver = SolverFactory.newDefault();
                 solver.setTimeout(3600); // 1 hour timeout
                 File[] puzzleCNFFiles = new File("sudokuCNFs").listFiles();

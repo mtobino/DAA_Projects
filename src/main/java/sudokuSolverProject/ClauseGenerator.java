@@ -4,6 +4,11 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Class that generates the necessary clauses and writes them to a file.
+ *
+ * @author Matthew Tobino
+ */
 public class ClauseGenerator
 {
     Scanner scanner;
@@ -27,7 +32,7 @@ public class ClauseGenerator
     {
         int clauseCounter = 0;
         clauseCounter += clueClauses(scanner, gridSize, pw);
-        clauseCounter += atMostOnePerCell(gridSize, pw);
+       // clauseCounter += atMostOnePerCell(gridSize, pw);
         clauseCounter += atMostOnePerRow(gridSize, pw);
         clauseCounter += atMostOnePerCol(gridSize, pw);
         clauseCounter += atMostOnePerSubGroup(gridLength, pw);
