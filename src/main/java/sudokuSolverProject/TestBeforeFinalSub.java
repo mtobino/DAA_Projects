@@ -22,7 +22,7 @@ public class TestBeforeFinalSub {
         File direc = new File("sudokuInputs");
         File[] files = direc.listFiles();
         assert files != null;
-        File file = files[4];
+        File file = files[0];
         File cnfFile = new File(file.getName() + "CNFInputs.txt");
             try
             {
@@ -71,7 +71,7 @@ public class TestBeforeFinalSub {
                     int[] solution = problem.model();
                     printSolution(solution, gridSize);
                     System.out.println("Satisfiable !");
-                    reader.decode(problem.model(), out);
+                    //reader.decode(problem.model(), out);
                 } else {
                     System.out.println("Unsatisfiable !");
                 }

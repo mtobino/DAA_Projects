@@ -102,7 +102,6 @@ public class ClauseGenerator
                 }
                 pw.print("0\n");
                 clauseCounter++;
-                //clauses.push(clauseFromList(clause));
                 clause.clear();
             }
 
@@ -251,10 +250,10 @@ public class ClauseGenerator
                 // for every value of the col
                 for(int val = 1; val <= gridSize; val++){
                     // add the next values to the clause
-                    for(int nextVal = val + 1; nextVal <= gridSize; nextVal++)
+                    for(int nextCol = col + 1; nextCol <= gridSize; nextCol++)
                     {
                         Variable var1 = new Variable(row, col, val, gridSize);
-                        Variable var2 = new Variable(row, col, nextVal, gridSize);
+                        Variable var2 = new Variable(row, nextCol, val, gridSize);
                         pw.print( (-var1.encodeVariable()) + " " + (-var2.encodeVariable()) );
                         pw.print(" 0\n");
                         clauseCounter++;
@@ -285,10 +284,10 @@ public class ClauseGenerator
                 for(int val = 1; val <= gridSize; val++)
                 {
                     // for every value after that next value
-                    for(int nextVal = val + 1; nextVal <= gridSize; nextVal++)
+                    for(int nextRow = row + 1; nextRow <= gridSize; nextRow++)
                     {
                         Variable var1 = new Variable(row, col, val, gridSize);
-                        Variable var2 = new Variable(row, col, nextVal, gridSize);
+                        Variable var2 = new Variable(nextRow, col, val, gridSize);
                         pw.print( (-var1.encodeVariable()) + " " + (-var2.encodeVariable()) );
                         pw.print(" 0\n");
                         clauseCounter++;
