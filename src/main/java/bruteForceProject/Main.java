@@ -21,18 +21,7 @@ public class Main
         Boolean[] testValues = new Boolean[0];
         Scanner scanner;
         File[] files = new File("bruteForceInputs").listFiles();
-        /*File[] files = new File[10];
-        files[0] = new File("s5.cnf");
-        files[1] = new File("s15.cnf");
-        files[2] = new File("s20.cnf");
-        files[3] = new File("s28.cnf");
-        files[4] = new File("u15.cnf");
-        files[5] = new File("u20.cnf");
-        files[6] = new File("u27.cnf");
-        files[7] = new File("u29.cnf");
-        files[8] = new File("u30.cnf");
-        files[9] = new File("u32.cnf");*/
-
+        assert files != null;
         for(File file : files)
         {
             try
@@ -113,10 +102,10 @@ public class Main
         while(!result)
         {
             result = testClauses(testValues, clauses);
-            // check if the all true case has been tested
-            if(generateNextVars(testValues))
+            // check if the all true case has been tested and there was still no result to be found
+            if(generateNextVars(testValues) && !result)
             {
-                // if it has not, get the next set of test values
+                // if conditions are met, there is no solution for the given cnf file
                 return false;
             }
         }
@@ -127,6 +116,7 @@ public class Main
      * Using binary addition, produce a new test values set with the given test values.
      *
      * @param testValues    the current test value array
+     * @return              true, iff the all values in the testValues array are true
      */
     private static boolean generateNextVars(Boolean[] testValues)
     {
@@ -171,21 +161,5 @@ public class Main
             solvable = clauses.get(i).evaluate(testValues);
         }
         return solvable;
-    }
-
-    /**
-     * Test if the array is all true values
-     *
-     * @param testValues    The test values being assessed
-     * @return              true, iff the array is all true values
-     */
-    private static boolean isAllTrue(Boolean[] testValues)
-    {
-        boolean allTrue = true;
-        for(int i = 0; i < testValues.length && allTrue; i++)
-        {
-            allTrue = testValues[i];
-        }
-        return allTrue;
     }
 }
