@@ -10,7 +10,6 @@ import org.sat4j.specs.ISolver;
 import org.sat4j.specs.TimeoutException;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.*;
 
 /**
@@ -39,7 +38,6 @@ public class Main {
                 Scanner scanner = new Scanner(file);
                 int gridLength = scanner.nextInt();
                 int gridSize = gridLength * scanner.nextInt();
-                int clauseCounter;
                 //advance the scanner to avoid issues
                 scanner.nextLine();
 
@@ -48,6 +46,7 @@ public class Main {
                 clauses.generateClauses();
 
                 pw.close();
+                scanner.close();
 
                 ISolver solver = SolverFactory.newDefault();
                 solver.setTimeout(3600); // 1 hour timeout

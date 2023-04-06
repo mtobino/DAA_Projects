@@ -95,21 +95,16 @@ public class Main
     {
         // start with all variables being false
         Arrays.fill(testValues, false);
-        // assume there is no solution at first
-        boolean result = testClauses(testValues, clauses);
+        boolean result = false;
+        boolean done = false;
         //generateNextVars(testValues);
+
         // run until you find a solution
-        while(!result)
-        {
-            result = testClauses(testValues, clauses);
-            // check if the all true case has been tested and there was still no result to be found
-            if(generateNextVars(testValues) && !result)
-            {
-                // if conditions are met, there is no solution for the given cnf file
-                return false;
-            }
-        }
-        return true;
+        while (!done && !(result = testClauses(testValues, clauses)))
+            done = generateNextVars(testValues);
+         // while(!done);
+
+        return result;
     }
 
     /**
@@ -125,10 +120,11 @@ public class Main
         // find the right most zero and store it into zero pos
         for(int i = 0; i < testValues.length; i++)
         {
-           if(allTrue)
-           {
-               allTrue = testValues[i];
-           }
+//           if(allTrue)
+//           {
+//               allTrue = testValues[i];
+//           }
+            allTrue &= testValues[i];
             if(!testValues[i])
                 zeroPos = i;
         }
