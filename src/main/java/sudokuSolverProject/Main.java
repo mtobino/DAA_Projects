@@ -52,6 +52,7 @@ public class Main {
                 solver.setTimeout(3600); // 1 hour timeout
                 Reader reader = new DimacsReader(solver);
                 IProblem problem = reader.parseInstance(new FileInputStream(cnfFile));
+
                 if (problem.isSatisfiable()) {
                     int[] solution = problem.model();
                     printSolution(solution, gridSize);

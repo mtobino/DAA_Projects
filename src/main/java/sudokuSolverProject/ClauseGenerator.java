@@ -29,7 +29,7 @@ public class ClauseGenerator
     public void generateClauses()
     {
         clueClauses(scanner, gridSize, pw);
-       // clauseCounter += atMostOnePerCell(gridSize, pw);
+        // x
         atMostOnePerRow(gridSize, pw);
         // n choose 2 * n^2
         atMostOnePerCol(gridSize, pw);
@@ -71,9 +71,7 @@ public class ClauseGenerator
                 if(!clue.equals("0"))
                 {
                     int clueNum = new Variable(row, col, Integer.parseInt(clue), gridSize).encodeVariable() ;
-                    //clauses.push(clueNum);
                     clauses.append("\n").append(clueNum).append(" 0");
-                    //pw.println(clueNum + " 0");
                     clauseCounter++;
                 }
                 col++;
