@@ -1,6 +1,7 @@
 package sudokuSolverProject;
 
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -34,12 +35,22 @@ public class ClauseGenerator
         clauseCounter += clueClauses(scanner, gridSize, pw);
        // clauseCounter += atMostOnePerCell(gridSize, pw);
         clauseCounter += atMostOnePerRow(gridSize, pw);
+        // 9 choose 2 * 81
         clauseCounter += atMostOnePerCol(gridSize, pw);
+        // 9 choose 2 * 81
         clauseCounter += atMostOnePerSubGroup(gridLength, pw);
+        // 9 choose 2 * 81
         clauseCounter += atLeastOnePerCell(gridSize, pw);
+        // 9*9
         clauseCounter += atLeastOnePerRowAndCol(gridSize, pw);
+        //2*81
         clauseCounter += atLeastOnePerSubGroup(gridLength, pw);
+        // 9*9
         return clauseCounter;
+    }
+    public int howManyClauses()
+    {
+        return 3*combination(gridSize, 2)*(gridSize*gridSize) + 4*(gridSize*gridSize);
     }
 
     /**
@@ -55,6 +66,7 @@ public class ClauseGenerator
         int row = 1;
         int col = 1;
         int clauseCounter = 0;
+        StringBuilder clauses = new StringBuilder();
         //generate the clue clauses
         while(scanner.hasNextLine())
         {
@@ -66,7 +78,8 @@ public class ClauseGenerator
                 {
                     int clueNum = new Variable(row, col, Integer.parseInt(clue), gridSize).encodeVariable() ;
                     //clauses.push(clueNum);
-                    pw.println(clueNum + " 0");
+                    clauses.append("\n").append(clueNum).append(" 0");
+                    //pw.println(clueNum + " 0");
                     clauseCounter++;
                 }
                 col++;
@@ -74,6 +87,9 @@ public class ClauseGenerator
             row++;
             col = 1;
         }
+        int totalClauses = howManyClauses() + clauseCounter;
+        String cnfFile = "p cnf " + (gridSize * gridSize * gridSize) + " " + totalClauses + clauses;
+        pw.println(cnfFile);
         return clauseCounter;
     }
 
@@ -340,4 +356,27 @@ public class ClauseGenerator
         }
         return clauseCounter;
     }
+
+    private int combination(int value, int choose)
+    {
+        return (value*(value-1))/choose;
+    }
+
+    private long factorial(int num)
+    {
+        BigInteger result = BigInteger.ONE;
+        //long result = 1;
+        BigInteger temp = new BigInteger(String.valueOf(1));
+        while(temp.intValue() != num)
+        {
+            result = result.multiply(temp);
+            temp = temp.add(BigInteger.ONE);
+        }
+
+
+
+        return result.longValueExact();
+    }
+
+
 }

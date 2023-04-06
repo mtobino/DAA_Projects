@@ -29,16 +29,14 @@ public class Main {
         File[] files = sudokuInputs.listFiles();
         assert files != null;
         //File file = files[1];
-        for(int i = 0; i < files.length; i++)
-        {
+        for (File file : files) {
             long sudokuBoardStart = System.currentTimeMillis();
-            File cnfFile = new File(files[i].getName() + "CNFInputs.txt");
-            try
-            {
+            File cnfFile = new File(sudokuCNFs,file.getName() + ".cnf");
+            try {
 
-                System.out.println("Testing: " + files[i].getName());
-                PrintWriter pw = new PrintWriter(new BufferedWriter( new FileWriter(cnfFile)));
-                Scanner scanner = new Scanner(files[i]);
+                System.out.println("Testing: " + file.getName());
+                PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(cnfFile)));
+                Scanner scanner = new Scanner(file);
                 int gridLength = scanner.nextInt();
                 int gridSize = gridLength * scanner.nextInt();
                 int clauseCounter;
@@ -47,28 +45,14 @@ public class Main {
 
                 // Make Clause Generator class to generate all the clauses
                 ClauseGenerator clauses = new ClauseGenerator(scanner, pw, gridSize);
-                clauseCounter = clauses.generateClauses();
+                clauses.generateClauses();
 
                 pw.close();
 
-                File puzzleCNF = new File(sudokuCNFs,files[i].getName() + ".cnf");
-                PrintWriter cnfWriter = new PrintWriter(new BufferedWriter( new FileWriter(puzzleCNF)));
-                BufferedReader br = new BufferedReader(new FileReader(cnfFile));
-                cnfWriter.println("p cnf " + (gridSize*gridSize*gridSize) + " " + clauseCounter);
-                String line = br.readLine();
-
-                while(line != null)
-                {
-                    cnfWriter.println(line);
-                    line = br.readLine();
-                }
-                cnfWriter.close();
-
-                boolean deleted = cnfFile.delete();
                 ISolver solver = SolverFactory.newDefault();
                 solver.setTimeout(3600); // 1 hour timeout
                 Reader reader = new DimacsReader(solver);
-                IProblem problem = reader.parseInstance(new FileInputStream(puzzleCNF));
+                IProblem problem = reader.parseInstance(new FileInputStream(cnfFile));
                 if (problem.isSatisfiable()) {
                     int[] solution = problem.model();
                     printSolution(solution, gridSize);
@@ -80,27 +64,17 @@ public class Main {
                     long sudokuBoardEnd = System.currentTimeMillis();
                     System.out.println("\nTime taken to complete: " + (sudokuBoardEnd - sudokuBoardStart));
                 }
-            }
-            catch (FileNotFoundException e)
-            {
+            } catch (FileNotFoundException e) {
                 System.out.println("No file listed");
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 System.out.println("Classic IO");
-            } catch (ContradictionException e)
-            {
+            } catch (ContradictionException e) {
                 System.out.println("Unsatisfiable (trivial)!");
-            }
-            catch (ParseFormatException e)
-            {
+            } catch (ParseFormatException e) {
                 System.out.println("Format is wrong");
-            }
-            catch (TimeoutException e) {
+            } catch (TimeoutException e) {
                 System.out.println("Timeout, sorry!");
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
