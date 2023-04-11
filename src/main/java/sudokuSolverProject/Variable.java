@@ -20,16 +20,8 @@ public class Variable {
     }
     /**
      * Encode the variable to be within the n*n*n delimiter of max number of variables
-     * in each sudoku problem
-     *
-     * Thought Process:
-     * Each board is made up of n*n number of cells and each cell has n possible answers
-     * By multiplying the col by n and the row by n*n and summing both of those results
-     * with the value, you will get a number with the n*n*n range that will accurately
-     * depict what row, col, and value the variable is
-     *
-     * The minus 1 on each field is due to the loops in the driver starting at 1 instead
-     * of the normal 0
+     * in each sudoku problem. Uses a base n encoding process. row, col, and val are all subtracted
+     * by one due to the loop setup in the main driver.
      *
      * @return  The encoded variable
      */
