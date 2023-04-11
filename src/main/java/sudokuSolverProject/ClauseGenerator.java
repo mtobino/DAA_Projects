@@ -29,19 +29,19 @@ public class ClauseGenerator
     public void generateClauses()
     {
         // comments indicate the formula for how many clauses each method will produce for a nxn board.
-        clueClauses(scanner, gridSize, pw);
+        clueClauses();
         // x -> depends on the given sudoku file
-        atMostOnePerRow(gridSize, pw);
+        atMostOnePerRow();
         // n choose 2 * n^2
-        atMostOnePerCol(gridSize, pw);
+        atMostOnePerCol();
         // n choose 2 * n^2
-        atMostOnePerSubGroup(gridLength, pw);
+        atMostOnePerSubGroup();
         // n choose 2 * n^2
-        atLeastOnePerCell(gridSize, pw);
+        atLeastOnePerCell();
         // n^2
-        atLeastOnePerRowAndCol(gridSize, pw);
+        atLeastOnePerRowAndCol();
         // 2n^2
-        atLeastOnePerSubGroup(gridLength, pw);
+        atLeastOnePerSubGroup();
         // n^2
     }
 
@@ -57,12 +57,8 @@ public class ClauseGenerator
 
     /**
      * Generate clue clauses based on the given file and write the clauses to a new file
-     *
-     * @param scanner   The given file being searched through
-     * @param gridSize  The overall size of the board
-     * @param pw        The file writer
      */
-    private void clueClauses(Scanner scanner, int gridSize, PrintWriter pw)
+    private void clueClauses()
     {
         int row = 1;
         int col = 1;
@@ -94,11 +90,8 @@ public class ClauseGenerator
 
     /**
      * Create clauses to ensure there is a value in every cell and write the clause to a file
-     *
-     * @param   gridSize    The size of the whole board
-     * @param   pw          The file writer
      */
-    private void atLeastOnePerCell(int gridSize, PrintWriter pw)
+    private void atLeastOnePerCell()
     {
         ArrayList<Variable> clause = new ArrayList<>();
         // in each row
@@ -128,11 +121,8 @@ public class ClauseGenerator
     /**
      * Create clauses to ensure each row has the specified value and each column also
      * has the specified value.
-     *
-     * @param   pw         The file writer
-     * @param   gridSize   The size of the whole board
      */
-    private void atLeastOnePerRowAndCol(int gridSize, PrintWriter pw) {
+    private void atLeastOnePerRowAndCol() {
         ArrayList<Variable> clause = new ArrayList<>();
         // for every value
         for (int val = 1; val <= gridSize; val++) {
@@ -173,11 +163,8 @@ public class ClauseGenerator
     /**
      *  Create clauses that check if each subgroup contains each value at least once in its nxn grid
      *  and write that clause to the cnf file
-     *
-     * @param   pw          The file writer
-     * @param   gridLength  The size of the subgroups
      */
-    private void atLeastOnePerSubGroup(int gridLength, PrintWriter pw)
+    private void atLeastOnePerSubGroup()
     {
         ArrayList<Variable> clause = new ArrayList<>();
         int gridSize = gridLength*gridLength;
@@ -211,11 +198,8 @@ public class ClauseGenerator
      * Creates clauses that guarantee that for every col, and in each row, there is
      * only one instance of a value that will satisfy the board. It will then write
      * that clause to the file
-     *
-     * @param gridSize  The size of the board
-     * @param pw        The file writer
      */
-    private void atMostOnePerCol(int gridSize, PrintWriter pw){
+    private void atMostOnePerCol(){
         // in every col
         for(int col = 1; col <= gridSize; col++){
             // in each row of that col
@@ -240,11 +224,8 @@ public class ClauseGenerator
     /**
      * Creates clauses that guarantee that in every row, and for each column, there is
      * only one value that will satisfy the board and writes that clause to a file
-     *
-     * @param pw        The file writer
-     * @param gridSize  The size of the board
      */
-    private void atMostOnePerRow(int gridSize, PrintWriter pw){
+    private void atMostOnePerRow(){
         // in every row
         for(int row = 1; row <= gridSize; row++){
             // in each col of that row
@@ -270,11 +251,8 @@ public class ClauseGenerator
     /**
      * Creates clauses that guarantee there is only one instance of a value in a given
      * subgroup, and writes the clause to a file
-     *
-     * @param gridLength    The overall size of the subgroup
-     * @param pw            The file writer
      */
-    private void atMostOnePerSubGroup(int gridLength, PrintWriter pw)
+    private void atMostOnePerSubGroup()
     {
         int max = gridLength*gridLength;
         for(int val = 1; val <= gridLength*gridLength; val++)
