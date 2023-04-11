@@ -28,9 +28,9 @@ public class ClauseGenerator
      */
     public void generateClauses()
     {
-        // comments indicate the formula for how many clauses each method will produce.
+        // comments indicate the formula for how many clauses each method will produce for a nxn board.
         clueClauses(scanner, gridSize, pw);
-        // x
+        // x -> depends on the given sudoku file
         atMostOnePerRow(gridSize, pw);
         // n choose 2 * n^2
         atMostOnePerCol(gridSize, pw);
