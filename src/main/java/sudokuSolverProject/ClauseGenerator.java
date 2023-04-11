@@ -43,7 +43,13 @@ public class ClauseGenerator
         atLeastOnePerSubGroup(gridLength, pw);
         // n^2
     }
-    public int howManyClauses()
+
+    /**
+     * Calculate how many clauses are generated before clue clauses are calculated
+     *
+     * @return  The total number of clauses before the clue clauses are added.
+     */
+    private int howManyClauses()
     {
         return 3*combination(gridSize)*(gridSize*gridSize) + 4*(gridSize*gridSize);
     }
