@@ -28,6 +28,7 @@ public class ClauseGenerator
      */
     public void generateClauses()
     {
+        // comments indicate the formula for how many clauses each method will produce.
         clueClauses(scanner, gridSize, pw);
         // x
         atMostOnePerRow(gridSize, pw);
@@ -39,7 +40,7 @@ public class ClauseGenerator
         atLeastOnePerCell(gridSize, pw);
         // n^2
         atLeastOnePerRowAndCol(gridSize, pw);
-        //2n^2
+        // 2n^2
         atLeastOnePerSubGroup(gridLength, pw);
         // n^2
     }
@@ -204,36 +205,6 @@ public class ClauseGenerator
             }
         }
     }
-
-    /*
-     * Generate small clauses that will prevent cells from having more than one value and
-     * write those clauses to a file
-     *
-     * @param gridSize  The overall size of the board
-     * @param pw        The file writer
-     *
-    private void atMostOnePerCell(int gridSize, PrintWriter pw)
-    {
-        //ArrayList<Variable> clause = new ArrayList<>();
-        // for every value
-        for(int val = 1; val <= gridSize; val++)
-        {
-            //in each row
-            for(int row = 1; row <= gridSize; row++){
-                // for every col of that row
-                for(int col = 1; col <= gridSize; col++){
-                    // make sure that the no value repeats in that cell
-                    for(int nextVal = val + 1; nextVal <= gridSize; nextVal++)
-                    {
-                        Variable var1 = new Variable(row, col, val, gridSize);
-                        Variable var2 = new Variable(row, col, nextVal, gridSize);
-                        pw.print( (-var1.encodeVariable()) + " " + (-var2.encodeVariable()) );
-                        pw.print(" 0\n");
-                    }
-                }
-            }
-        }
-    }*/
 
     /**
      * Creates clauses that guarantee that for every col, and in each row, there is

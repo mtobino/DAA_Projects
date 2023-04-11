@@ -27,7 +27,7 @@ public class Main {
         File sudokuInputs = new File("sudokuInputs");
         File[] files = sudokuInputs.listFiles();
         assert files != null;
-        //File file = files[1];
+
         for (File file : files) {
             long sudokuBoardStart = System.currentTimeMillis();
             File cnfFile = new File(sudokuCNFs,file.getName() + ".cnf");
@@ -41,13 +41,14 @@ public class Main {
                 //advance the scanner to avoid issues
                 scanner.nextLine();
 
-                // Make Clause Generator class to generate all the clauses
+                // Make Clause Generator class to generate all the clauses and print them to their respective files
                 ClauseGenerator clauses = new ClauseGenerator(scanner, pw, gridSize);
                 clauses.generateClauses();
 
                 pw.close();
                 scanner.close();
 
+                // Begin solving process
                 ISolver solver = SolverFactory.newDefault();
                 solver.setTimeout(3600); // 1 hour timeout
                 Reader reader = new DimacsReader(solver);
@@ -60,7 +61,6 @@ public class Main {
                     System.out.println("\nTime taken to complete: " + (sudokuBoardEnd - sudokuBoardStart));
                 } else {
                     System.out.println("Unsatisfiable !");
-
                     long sudokuBoardEnd = System.currentTimeMillis();
                     System.out.println("\nTime taken to complete: " + (sudokuBoardEnd - sudokuBoardStart));
                 }
@@ -87,14 +87,13 @@ public class Main {
      * The encoder but if it was set to solve for value instead of the variable
      *
      * @param var       the variable
-     * @param row       the row the variable was located in
-     * @param col       the col the variable was located in
      * @param gridSize  the size of the board
      * @return          The value of the variable
      */
-    private static int decodeVariable(int var, int row, int col, int gridSize)
+    private static int decodeVariable(int var, int gridSize)
     {
-        return -(gridSize*gridSize)*row - (gridSize*col) + (gridSize*gridSize) + gridSize + var;
+        int value;
+        return ( value = var % gridSize) == 0 ? gridSize : value;
     }
     /**
      * Prints the solution of the board based on the given solution and size
@@ -106,20 +105,19 @@ public class Main {
     private static void printSolution(int[] solution, int gridSize)
     {
         //System.out.println(Arrays.toString(solution));
-        int row = 1, col = 1;
+        int col = 1;
         for(int variable : solution)
         {
             if(variable > 0)
             {
                 if(col <= gridSize)
                 {
-                    System.out.print( decodeVariable(variable, row, col, gridSize) + " ");
+                    System.out.print( decodeVariable(variable, gridSize) + " ");
                 }
                 else
                 {
-                    row += 1;
                     col = 1;
-                    System.out.print("\n" + decodeVariable(variable, row, col, gridSize) + " ");
+                    System.out.print("\n" + decodeVariable(variable, gridSize) + " ");
                 }
                 col++;
             }
