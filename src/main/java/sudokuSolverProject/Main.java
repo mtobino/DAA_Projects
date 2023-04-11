@@ -104,7 +104,6 @@ public class Main {
      */
     private static void printSolution(int[] solution, int gridSize)
     {
-        //System.out.println(Arrays.toString(solution));
         int col = 1;
         for(int variable : solution)
         {

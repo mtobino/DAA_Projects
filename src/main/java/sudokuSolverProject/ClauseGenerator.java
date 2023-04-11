@@ -67,6 +67,7 @@ public class ClauseGenerator
         int row = 1;
         int col = 1;
         int clauseCounter = 0;
+        //Store clue clauses in a long string to be concatenated with the cnf file header
         StringBuilder clauses = new StringBuilder();
         //generate the clue clauses
         while(scanner.hasNextLine())
@@ -112,7 +113,7 @@ public class ClauseGenerator
                     // make a clause of one variable
                     clause.add(new Variable(row, col, val, gridSize));
                 }
-                // add clause to the stack of clauses
+                // print the variables on one line to make a clause
                 for(Variable variable : clause)
                 {
                     pw.print(variable.encodeVariable() + " ");
@@ -143,7 +144,7 @@ public class ClauseGenerator
                     // add the respective variable to the clause
                     clause.add(new Variable(row, col, val, gridSize));
                 }
-                // add the clause to the stack
+                // print the variables on one line to make a clause
                 for (Variable variable : clause) {
                     pw.print(variable.encodeVariable() + " ");
                 }
@@ -158,7 +159,7 @@ public class ClauseGenerator
                     // add the respective variable to the clause
                     clause.add(new Variable(row, col, val, gridSize));
                 }
-                // add the clause to the stack
+                // print the variables on one line to make a clause
                 for (Variable variable : clause) {
                     pw.print(variable.encodeVariable() + " ");
                 }
@@ -179,21 +180,21 @@ public class ClauseGenerator
     private void atLeastOnePerSubGroup(int gridLength, PrintWriter pw)
     {
         ArrayList<Variable> clause = new ArrayList<>();
-        int max = gridLength*gridLength;
+        int gridSize = gridLength*gridLength;
         for(int val = 1; val <= gridLength*gridLength; val++)
         {
             for(int overallCol = 1; overallCol <= gridLength; overallCol++)
             {
-                for(int subRow = 1; subRow <= max; subRow++)
+                for(int subRow = 1; subRow <= gridSize; subRow++)
                 {
-                    int maxCol = max - gridLength*(gridLength - overallCol);
+                    int maxCol = gridSize - gridLength*(gridLength - overallCol);
                     for(int subCol = (gridLength*(overallCol - 1) + 1); subCol <= maxCol; subCol++)
                     {
-                        clause.add(new Variable(subRow, subCol, val, max));
+                        clause.add(new Variable(subRow, subCol, val, gridSize));
                     }
                     if(subRow % gridLength == 0)
                     {
-                        //pw.println();
+                        // print the variables on one line to make a clause
                         for(Variable variable : clause)
                         {
                             pw.print(variable.encodeVariable() + " ");
@@ -259,6 +260,8 @@ public class ClauseGenerator
                         pw.print( (-var1.encodeVariable()) + " " + (-var2.encodeVariable()) );
                         pw.print(" 0\n");
                     }
+                    // build a not clause that will only be true if correct value is in
+                    // the correct position
                 }
             }
         }
@@ -292,6 +295,8 @@ public class ClauseGenerator
                             pw.print( (-var1.encodeVariable()) + " " + (-var2.encodeVariable()) );
                             pw.print(" 0\n");
                         }
+                        // build a not clause that will only be true if correct value is in
+                        // the correct position
                     }
                 }
             }
