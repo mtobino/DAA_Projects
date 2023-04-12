@@ -84,7 +84,7 @@ public class Main {
     }
 
     /**
-     * The encoder but if it was set to solve for value instead of the variable
+     * Decode the given variable based on the size of the board
      *
      * @param var       the variable
      * @param gridSize  the size of the board
