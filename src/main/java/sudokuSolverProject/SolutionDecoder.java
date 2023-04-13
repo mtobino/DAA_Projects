@@ -1,14 +1,14 @@
 package sudokuSolverProject;
 
 public class SolutionDecoder {
-    private int[] solution;
+    private final int[] solution;
 
-    private int gridSize;
+    private final int gridSize;
 
-    public SolutionDecoder(int[] solution, int gridSizez)
+    public SolutionDecoder(int[] solution, int gridSize)
     {
         this.solution = solution;
-        this.gridSize = gridSizez;
+        this.gridSize = gridSize;
     }
 
     /**
