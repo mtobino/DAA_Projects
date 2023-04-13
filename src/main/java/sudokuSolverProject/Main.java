@@ -55,8 +55,8 @@ public class Main {
                 IProblem problem = reader.parseInstance(new FileInputStream(cnfFile));
 
                 if (problem.isSatisfiable()) {
-                    int[] solution = problem.model();
-                    printSolution(solution, gridSize);
+                    SolutionDecoder decoder = new SolutionDecoder(problem.model(), gridSize);
+                    decoder.printSolution();
                     long sudokuBoardEnd = System.currentTimeMillis();
                     System.out.println("\nTime taken to complete: " + (sudokuBoardEnd - sudokuBoardStart));
                 } else {
@@ -81,46 +81,6 @@ public class Main {
         long programEnd = System.currentTimeMillis();
         System.out.println("\nTime taken to run to completion: " + (programEnd - programStart) );
 
-    }
-
-    /**
-     * Decode the given variable based on the size of the board
-     *
-     * @param var       the variable
-     * @param gridSize  the size of the board
-     * @return          The value of the variable
-     */
-    private static int decodeVariable(int var, int gridSize)
-    {
-        int value;
-        return ( value = var % gridSize) == 0 ? gridSize : value;
-    }
-    /**
-     * Prints the solution of the board based on the given solution and size
-     * of the board
-     *
-     * @param solution  The solution provided by the SAT solver
-     * @param gridSize  The size of the board
-     */
-    private static void printSolution(int[] solution, int gridSize)
-    {
-        int col = 1;
-        for(int variable : solution)
-        {
-            if(variable > 0)
-            {
-                if(col <= gridSize)
-                {
-                    System.out.print( decodeVariable(variable, gridSize) + " ");
-                }
-                else
-                {
-                    col = 1;
-                    System.out.print("\n" + decodeVariable(variable, gridSize) + " ");
-                }
-                col++;
-            }
-        }
     }
 }
 
