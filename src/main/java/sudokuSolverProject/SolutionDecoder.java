@@ -1,10 +1,21 @@
 package sudokuSolverProject;
 
+/**
+ * Solution decoder for sudoku project. Will take in a SAT solution given by SAT4j and print out the
+ * solution to the sudoku board.
+ *
+ * @author Matthew Tobino
+ */
 public class SolutionDecoder {
     private final int[] solution;
-
     private final int gridSize;
 
+    /**
+     * Constructor for SolutionDecoder
+     *
+     * @param solution  The given solution array from SAT4j
+     * @param gridSize  The given size of the board
+     */
     public SolutionDecoder(int[] solution, int gridSize)
     {
         this.solution = solution;

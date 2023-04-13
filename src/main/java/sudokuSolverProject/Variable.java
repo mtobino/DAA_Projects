@@ -11,6 +11,13 @@ public class Variable {
     private final int value;
     private final int gridSize;
 
+    /**
+     * Constructor for a Variable
+     * @param row       The given row the value is in
+     * @param col       The given column the value is in
+     * @param value     The given value
+     * @param gridSize  The given size of the board
+     */
     public Variable(int row, int col, int value, int gridSize)
     {
         this.row = row;
