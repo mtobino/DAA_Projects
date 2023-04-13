@@ -70,6 +70,8 @@ public class Main {
                 System.out.println("Classic IO");
             } catch (ContradictionException e) {
                 System.out.println("Unsatisfiable (trivial)!");
+                long sudokuBoardEnd = System.currentTimeMillis();
+                System.out.println("Time taken to complete: " + (sudokuBoardEnd - sudokuBoardStart));
             } catch (ParseFormatException e) {
                 System.out.println("Format is wrong");
             } catch (TimeoutException e) {
